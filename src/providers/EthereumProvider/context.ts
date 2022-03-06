@@ -1,12 +1,12 @@
 import { ethers } from "ethers";
 import { createContext, useContext } from "react";
 
-export type TEthereumContext = ethers.providers.BaseProvider;
+export type TEthereumContext = {
+	defaultProvider: ethers.providers.BaseProvider | null;
+};
 
-export const provider = ethers.getDefaultProvider();
+export const EthereumContext = createContext<TEthereumContext>({
+	defaultProvider: null,
+});
 
-export const EthereumContext = createContext<TEthereumContext>(provider);
-
-export function useEthereum() {
-    return useContext(EthereumContext);
-}
+export const useEthereum = () => useContext(EthereumContext);

@@ -1,20 +1,23 @@
-import { Web3Provider } from "./Web3Provider";
-import { ThemeProvider } from "./ThemeProvider";
-import { EthereumProvider } from "./EthereumProvider";
+import { store } from "../state";
 import { Provider as StoreProvider } from "react-redux";
 
-import { store } from "../state";
+import { UserProvider } from "./UserProvider";
+import { ThemeProvider } from "./ThemeProvider";
+import { WalletProvider } from "./WalletProvider";
+import { EthereumProvider } from "./EthereumProvider";
 
 function Providers({ children }: React.PropsWithChildren<{}>) {
-    return (
-        <StoreProvider store={store}>
-            <ThemeProvider>
-                <EthereumProvider>
-                    <Web3Provider>{children}</Web3Provider>
-                </EthereumProvider>
-            </ThemeProvider>
-        </StoreProvider>
-    );
+	return (
+		<StoreProvider store={store}>
+			<ThemeProvider>
+				<EthereumProvider>
+					<WalletProvider>
+						<UserProvider>{children}</UserProvider>
+					</WalletProvider>
+				</EthereumProvider>
+			</ThemeProvider>
+		</StoreProvider>
+	);
 }
 
 export default Providers;

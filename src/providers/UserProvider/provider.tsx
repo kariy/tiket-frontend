@@ -1,13 +1,12 @@
-import { RootState } from "state";
-import { useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
-
-import { UserContext } from "./context";
-import { setUser } from "state/User/actions";
-import { useWallet } from "providers/WalletProvider";
+import { useSelector } from "react-redux";
 
 import { api } from "@lib/apis";
-import { useSignUpModal } from "state/Toggle";
+import { RootState } from "states";
+import { setUser } from "states/User";
+import { UserContext } from "./context";
+import { useSignUpModal } from "@lib/hooks";
+import { useWallet } from "providers/WalletProvider";
 
 export function UserProvider({ children }: React.PropsWithChildren<{}>) {
 	const wallet = useWallet();

@@ -3,9 +3,7 @@ import "../styles/globals.css";
 import styled from "styled-components";
 import type { AppProps } from "next/app";
 
-import Providers from "../providers";
-import { useSignUpModal } from "state/Toggle";
-
+import Providers from "providers";
 import Navbar from "@components/Navbar";
 import Sidebar from "@components/Sidebar";
 import { MaxContainerStyled } from "@components/Styled";

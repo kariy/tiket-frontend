@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { TCurrentUser } from "state/User";
+import { TCurrentUser } from "states/User";
 
 type TUserContext = {
 	current: TCurrentUser | null;

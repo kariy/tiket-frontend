@@ -4,7 +4,7 @@ import MenuSVG from "../../../assets/svg/dot-menu.svg";
 
 import Profile2SVG from "../../../assets/svg/profile-2.svg";
 import { MEDIA_DIMENSIONS } from "@lib/constants/media";
-import { useUserModal } from "state/Toggle";
+import { useUserModal } from "states/Toggle";
 
 const MenuIcon = styled(MenuSVG)`
 	height: 13px;

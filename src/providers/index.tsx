@@ -1,4 +1,4 @@
-import { store } from "../state";
+import { store } from "../states";
 import { Provider as StoreProvider } from "react-redux";
 
 import { UserProvider } from "./UserProvider";

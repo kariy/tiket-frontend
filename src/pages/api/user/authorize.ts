@@ -23,7 +23,6 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<ResponseData>
 ) {
-	console.log("ok", req.cookies);
 	const token = req.cookies[USER_SESSION_KEY];
 
 	if (!token)

@@ -6,7 +6,7 @@ import { useTheme } from "../../providers/ThemeProvider";
 import { useWallet } from "../../providers/WalletProvider";
 import { useEthereum } from "../../providers/EthereumProvider";
 
-import { useSidebar, useSignUpModal, useUserModal } from "../../state/Toggle";
+import { useSidebar, useSignUpModal, useUserModal } from "../../states/Toggle";
 
 export {
 	// State hooks

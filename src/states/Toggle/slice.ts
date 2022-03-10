@@ -1,4 +1,4 @@
-import { RootState } from "state";
+import { RootState } from "states";
 import { useSelector } from "react-redux";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 

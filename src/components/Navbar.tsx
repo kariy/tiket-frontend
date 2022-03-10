@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { useSidebar } from "state/Toggle";
+import { useSidebar } from "states/Toggle";
 import { MaxContainerStyled } from "./Styled";
 
 import LogoSVG from "../assets/svg/logo.svg";

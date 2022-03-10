@@ -1,4 +1,4 @@
-import { store } from "state";
+import { store } from "states";
 import { set, toggle, TTogglePayloadAction } from "./slice";
 
 type TToggleableStateName = TTogglePayloadAction["name"];

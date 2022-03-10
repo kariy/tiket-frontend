@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux";
-import { setTheme, toggleTheme } from "state/Theme";
+import { setTheme, toggleTheme } from "states/Theme";
 import {
 	DefaultTheme,
 	ThemeProvider as StyledThemeProvider,
 	ThemeColors,
 } from "styled-components";
 
-import { RootState } from "../../state";
+import { RootState } from "../../states";
 import { ThemeContext } from "./context";
 
 export enum ThemeEnum {

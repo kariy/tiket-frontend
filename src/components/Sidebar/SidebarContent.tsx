@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
+import UserBar from "./UserBar";
 import NavLink from "./NavLink";
 import { BoxContainerStyled } from "../Styled";
 import { MEDIA_DIMENSIONS } from "@lib/constants/media";
@@ -10,8 +11,6 @@ import HomeSVG from "../../assets/svg/home.svg";
 import FolderSVG from "../../assets/svg/folder.svg";
 import SearchSVG from "../../assets/svg/search.svg";
 import TicketSVG from "../../assets/svg/ticket.svg";
-
-import UserBar from "./UserBar";
 
 const NavItem = styled.div`
 	margin: 0.4rem 0;

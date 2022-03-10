@@ -18,7 +18,7 @@ export const InputStyled = styled.input`
 	background-color: white;
 	transition: outline 50ms ease;
 	border-radius: ${(props) => props.theme.rounded.md};
-	border: 1px solid ${(props) => props.theme.colors.grey.dark};
+	border: 1px solid ${(props) => props.theme.colors.grey.medium};
 
 	&:focus,
 	&:focus-visible {

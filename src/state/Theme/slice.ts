@@ -8,7 +8,7 @@ export type TThemeState = {
 };
 
 const initialState: TThemeState = {
-	mode: ThemeEnum.LIGHT,
+	mode: ThemeEnum.light,
 };
 
 export const themeSlice = createSlice({
@@ -17,9 +17,9 @@ export const themeSlice = createSlice({
 	reducers: {
 		toggle: (state) => {
 			state.mode =
-				state.mode === ThemeEnum.DARK
-					? ThemeEnum.LIGHT
-					: ThemeEnum.DARK;
+				state.mode === ThemeEnum.dark
+					? ThemeEnum.light
+					: ThemeEnum.dark;
 		},
 		set: (state, action: PayloadAction<ThemeEnum>) => {
 			state.mode = action.payload;

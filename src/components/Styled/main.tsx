@@ -39,12 +39,5 @@ export const SectionHeaderStyled = styled.div`
 
 export const LineBreakStyled = styled.div`
 	margin: 1.7rem 0;
-	border-bottom: 1px solid ${({ theme }) => theme.colors.grey.dark};
-`;
-
-export const H1Styled = styled.div`
-	margin: 1rem 0;
-	font-weight: 700;
-	font-size: 1.5rem;
-	line-height: 120%;
+	border-bottom: 1px solid ${({ theme }) => theme.colors.grey.medium};
 `;

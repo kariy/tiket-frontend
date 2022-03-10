@@ -44,6 +44,8 @@ const NavItem = styled.div`
 
 	svg {
 		height: 1.8em;
+
+		transition: height 150ms ease-in-out;
 	}
 
 	.nav-item__text {

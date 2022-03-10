@@ -13,6 +13,8 @@ const MenuIcon = styled(MenuSVG)`
 const ProfileIcon = styled(Profile2SVG)`
 	height: 15px;
 	color: ${({ theme }) => theme.colors.black};
+
+	transition: height 150ms ease-in-out;
 `;
 
 const MenuButton = styled.div`

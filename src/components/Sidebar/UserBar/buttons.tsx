@@ -1,13 +1,10 @@
-import { MouseEventHandler, useCallback } from "react";
 import styled from "styled-components";
+import { MouseEventHandler, useCallback } from "react";
+
+import { useUser } from "providers/UserProvider";
+import { useWallet } from "providers/WalletProvider";
 
 import EthereumColoredSVG from "../../../assets/svg/ethereum-colored.svg";
-import { useEthereum } from "providers/EthereumProvider";
-import { useWallet } from "providers/WalletProvider";
-import { UserAPI } from "@lib/apis";
-import Cookies from "js-cookie";
-import { USER_SESSION_TOKEN } from "@lib/constants";
-import { useUser } from "providers/UserProvider";
 
 const ButtonText = styled.div`
 	flex: 1;

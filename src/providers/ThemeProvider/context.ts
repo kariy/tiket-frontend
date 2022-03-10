@@ -8,7 +8,7 @@ type TThemeContext = {
 };
 
 export const ThemeContext = createContext<TThemeContext>({
-	mode: ThemeEnum.light,
+	mode: ThemeEnum.LIGHT,
 	set: () => {},
 	toggle: () => {},
 });

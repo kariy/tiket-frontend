@@ -10,8 +10,8 @@ import { RootState } from "../../state";
 import { ThemeContext } from "./context";
 
 export enum ThemeEnum {
-	light,
-	dark,
+	LIGHT = "THEME_LIGHT",
+	DARK = "THEME_DARK",
 }
 
 function getColors(mode: ThemeEnum): ThemeColors {

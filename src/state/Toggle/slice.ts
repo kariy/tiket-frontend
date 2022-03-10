@@ -5,11 +5,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export enum AppToggleableEnum {
 	SIDEBAR = "SIDEBAR",
 	USER_MODAL = "USER_MODAL",
+	SIGN_UP_MODAL = "SIGN_UP_MODAL",
 }
 
 type TToggleState = {
 	SIDEBAR: boolean;
 	USER_MODAL: boolean;
+	SIGN_UP_MODAL: boolean;
 };
 
 export type TTogglePayloadAction = {
@@ -20,6 +22,7 @@ export type TTogglePayloadAction = {
 const initialState: TToggleState = {
 	SIDEBAR: false,
 	USER_MODAL: false,
+	SIGN_UP_MODAL: false,
 };
 
 const toggleableSlice = createSlice({

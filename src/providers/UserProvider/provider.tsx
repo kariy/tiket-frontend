@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { RootState } from "state";
 import { useSelector } from "react-redux";
 import { useCallback, useEffect } from "react";
@@ -6,12 +7,11 @@ import { UserContext } from "./context";
 import { setUser } from "state/User/actions";
 import { useWallet } from "providers/WalletProvider";
 
-import { api } from "@lib/apis";
-import { useSignUpModal } from "state/Toggle";
+import { UserAPI } from "@lib/apis";
+import { USER_SESSION_TOKEN } from "@lib/constants/misc";
 
 export function UserProvider({ children }: React.PropsWithChildren<{}>) {
 	const wallet = useWallet();
-	const signUpModal = useSignUpModal();
 	const user = useSelector((state: RootState) => state.user);
 
 	/*/////////////////////////////////////////////////
@@ -19,57 +19,39 @@ export function UserProvider({ children }: React.PropsWithChildren<{}>) {
 	/////////////////////////////////////////////////*/
 
 	const signIn = useCallback(() => {
-		if (!wallet.signer)
-			return console.error({
-				message: "UNABLE_TO_SIGN_IN",
-				reason: "WALLET_NOT_CONNECTED",
-			});
+		if (!wallet.signer) return;
 
-		api.user
-			.signIn(wallet.signer)
-			.then(function ({ data }) {
+		UserAPI.signIn(wallet.signer)
+			.then((res) => res.json())
+			.then((data) => {
+				Cookies.set(USER_SESSION_TOKEN, data.sessionToken);
 				window.location.reload();
-			})
-			.catch(function (err) {
-				if (err.response.data.message === "USER_DOES_NOT_EXIST")
-					signUpModal.open();
 			});
-	}, [wallet.signer, signUpModal]);
+	}, [wallet.signer]);
 
 	const signOut = useCallback(() => {
-		if (!user.isSignedIn && !user.current)
-			return console.error({
-				message: "UNABLE_TO_SIGN_OUT",
-				reason: "NOT_SIGNED_IN",
-			});
-
-		api.user.signOut();
-	}, [user]);
+		// delete jwt token from cookie
+		Cookies.remove(USER_SESSION_TOKEN);
+		window.location.reload();
+	}, []);
 
 	/*/////////////////////////////////////////////////
 	//    Side effects
 	/////////////////////////////////////////////////*/
 
 	useEffect(() => {
-		if (wallet.isConnected)
-			api.user
-				.authorize()
-				.then(({ data }) => {
-					setUser({
-						id: data.user.id,
-						email: data.user.email,
-						address: data.user.public_address,
-					});
-				})
-				.catch((e) => {
-					console.error(e);
-					api.user.deleteAuthCookies();
-				});
+		// try to sign in every time on page load
+		// retrieve jwt token from cookie
+		// if token exists:
+		// 		call api to validate
+		// else:
+		// 		do nothing
 
-		console.error({
-			message: "UNABLE_TO_SIGN_IN",
-			reason: "WALLET_NOT_CONNECTED",
-		});
+		if (wallet.isConnected)
+			UserAPI.authorize()
+				.then((res) => res.json())
+				.then((data) => setUser({ address: data.payload.user }))
+				.catch((e) => Cookies.remove(USER_SESSION_TOKEN));
 	}, [wallet.isConnected]);
 
 	return (

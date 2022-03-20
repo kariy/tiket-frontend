@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from "@ethersproject/providers";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { WalletContext } from "./context";
 import { useWeb3WalletModal } from "@lib/hooks";
@@ -16,7 +16,7 @@ export function WalletProvider({ children }: React.PropsWithChildren<{}>) {
 		null
 	);
 
-	const signerRef = useRef<JsonRpcSigner | null>(null);
+	const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
 
 	/*/////////////////////////////////////////////////
     //    Functions
@@ -25,12 +25,14 @@ export function WalletProvider({ children }: React.PropsWithChildren<{}>) {
 	const connect = useCallback(async () => {
 		try {
 			const account = await connectModal();
+
 			if (account) setConnectedAddress(account);
 		} catch (e) {
 			// handle error here
 			//
 			// suggestion :
 			// can display a toast if user reject
+			return console.error({ e });
 		}
 	}, [connectModal]);
 
@@ -44,7 +46,8 @@ export function WalletProvider({ children }: React.PropsWithChildren<{}>) {
 		(accounts: string[]) => {
 			if (!accounts.length) return disconnect();
 
-			setConnectedAddress(accounts[0]);
+			window.location.reload();
+			// setConnectedAddress(accounts[0]);
 		},
 		[disconnect]
 	);
@@ -55,13 +58,13 @@ export function WalletProvider({ children }: React.PropsWithChildren<{}>) {
     //    Side effects
     /////////////////////////////////////////////////*/
 
-	// connect wallet on page load if there's a cached provider
+	// connect wallet on page load if cached provider available
 	useEffect(() => {
 		if (modal && modal.cachedProvider) connect();
 	}, [modal, connect]);
 
 	useEffect(() => {
-		if (web3Provider) signerRef.current = web3Provider.getSigner();
+		if (web3Provider) setSigner(web3Provider.getSigner());
 	}, [web3Provider]);
 
 	/*/////////////////////////////////////////////////
@@ -100,10 +103,10 @@ export function WalletProvider({ children }: React.PropsWithChildren<{}>) {
 	return (
 		<WalletContext.Provider
 			value={{
+				signer,
 				isConnected,
 				connectedAddress,
 				provider: web3Provider,
-				signer: signerRef.current,
 				connect,
 				disconnect,
 			}}

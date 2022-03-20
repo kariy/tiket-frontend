@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useCallback, useEffect } from "react";
 
 import { api } from "@lib/apis";
 import { RootState } from "states";
@@ -50,10 +50,16 @@ export function UserProvider({ children }: React.PropsWithChildren<{}>) {
 	/////////////////////////////////////////////////*/
 
 	useEffect(() => {
-		if (wallet.isConnected)
+		if (wallet.connectedAddress)
 			api.user
 				.authorize()
 				.then(({ data }) => {
+					if (wallet.connectedAddress !== data.user.public_address)
+						return console.error({
+							message: "UNABLE_TO_SIGN_IN",
+							reason: "DIFFERENT_ADDRESS_STORED_IN_SESSION",
+						});
+
 					setUser({
 						id: data.user.id,
 						email: data.user.email,
@@ -69,7 +75,7 @@ export function UserProvider({ children }: React.PropsWithChildren<{}>) {
 			message: "UNABLE_TO_SIGN_IN",
 			reason: "WALLET_NOT_CONNECTED",
 		});
-	}, [wallet.isConnected]);
+	}, [wallet.connectedAddress]);
 
 	return (
 		<UserContext.Provider

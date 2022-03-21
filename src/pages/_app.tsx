@@ -1,7 +1,8 @@
 import React from "react";
 import "../styles/globals.css";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import type { AppProps } from "next/app";
+import NextNProgress from "nextjs-progressbar";
 
 import Providers from "providers";
 import Navbar from "@components/Navbar";
@@ -65,6 +66,8 @@ const Container = styled.div`
 `;
 
 function App({ Component, pageProps }: AppProps) {
+	const theme = useTheme();
+
 	return (
 		<Container id="app-main-container">
 			<Wrapper>
@@ -74,6 +77,9 @@ function App({ Component, pageProps }: AppProps) {
 					<div id="main-content-grid">
 						<Sidebar />
 						<div id="main-page-container">
+							<NextNProgress
+								color={theme.colors.primary.medium}
+							/>
 							<Component {...pageProps} />
 						</div>
 					</div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
 	FieldValues,
 	useForm,
@@ -9,7 +9,7 @@ import { FormStageEnum } from "../types/form";
 
 export type TFormStage = {
 	current: FormStageEnum;
-	set: (stage: FormStageEnum) => void;
+	set: Dispatch<SetStateAction<FormStageEnum>>;
 };
 
 export interface TCreateTicketFormReturn<T, P> extends UseFormReturn<T, P> {
@@ -32,8 +32,8 @@ export function useCreateTicketForm<
 	return {
 		...form,
 		stage: {
-			current: stage,
 			set: setStage,
+			current: stage,
 		},
 	};
 }

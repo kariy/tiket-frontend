@@ -1,12 +1,14 @@
+import { useCallback } from "react";
 import styled from "styled-components";
-import { FormProvider, SubmitHandler } from "react-hook-form";
-import { useCreateTicketForm } from "../../../lib/hooks/useCreateTicketForm";
+import { FormProvider } from "react-hook-form";
 
-import TicketForm from "./TicketForm";
 import FormProgressBar from "./FormProgressBar";
 import { SectionHeaderStyled } from "../../Styled";
-
+import { useWallet } from "providers/WalletProvider";
+import { useTicketFactory } from "providers/TiketProvider";
+import { useCreateTicketForm } from "@lib/hooks/useCreateTicketForm";
 import { FormStageEnum, TCreateTicketFormValues } from "@lib/types/form";
+import TicketForm, { TCreateTicketFormSubmitHandler } from "./TicketForm";
 
 const Wrapper = styled.div`
 	height: 100%;
@@ -20,7 +22,7 @@ const Container = styled.div`
 	grid-template-rows: min-content 1fr;
 `;
 
-const formDefaultValues: TCreateTicketFormValues = {
+const formDefaultValues: Omit<TCreateTicketFormValues, "ticket"> = {
 	event: {
 		name: "",
 		date: "",
@@ -28,26 +30,61 @@ const formDefaultValues: TCreateTicketFormValues = {
 		website: "",
 		venue: { address: "", name: "" },
 	},
-	ticket: {
-		price: 0,
-		maxMintPerUser: 0,
-		totalAvailable: 0,
-		policy: null,
-	},
+};
+
+const getSectionTitle = (stage: FormStageEnum) => {
+	switch (stage) {
+		case FormStageEnum.EVENT_DETAIL:
+			return "Event details";
+		case FormStageEnum.TICKET_DETAIL:
+			return "Ticket details";
+		case FormStageEnum.TICKET_POLICY:
+			return "Ticket policies";
+		case FormStageEnum.WAITING:
+			return "Processing request";
+		case FormStageEnum.SUCCESS:
+			return "Request successful";
+		default:
+			return "";
+	}
 };
 
 function TicketFormContainer() {
+	const wallet = useWallet();
+	const factory = useTicketFactory();
+
 	const { stage, ...useFormMethods } =
 		useCreateTicketForm<TCreateTicketFormValues>({
 			mode: "onChange",
 			defaultValues: formDefaultValues,
 		});
 
-	const handleFormSubmit: SubmitHandler<TCreateTicketFormValues> = function (
-		data
-	) {
-		console.log("create ticket form data", data);
-	};
+	const handleFormSubmit: TCreateTicketFormSubmitHandler = useCallback(
+		function (data, reset) {
+			const {
+				event: { name, ...rest },
+				ticket,
+			} = data;
+
+			factory
+				.createTicket({
+					event: { name, ...rest },
+					ticket: {
+						price: ticket.price,
+						maxMint: ticket.maxMintPerUser,
+						total: ticket.totalAvailable,
+					},
+				})
+				.then(() => stage.set(FormStageEnum.WAITING))
+				.catch(() => {
+					console.error({
+						message: "UNABLE_TO_PROCESS_CREATE_TICKET_REQUEST",
+					});
+					stage.set(FormStageEnum.FAIL);
+				});
+		},
+		[stage, factory]
+	);
 
 	return (
 		<Container>
@@ -63,19 +100,6 @@ function TicketFormContainer() {
 			</Wrapper>
 		</Container>
 	);
-}
-
-function getSectionTitle(stage: FormStageEnum): string {
-	switch (stage) {
-		case FormStageEnum.EVENT_DETAIL:
-			return "Event details";
-		case FormStageEnum.TICKET_DETAIL:
-			return "Ticket details";
-		case FormStageEnum.TICKET_POLICY:
-			return "Ticket policies";
-		default:
-			return "";
-	}
 }
 
 export default TicketFormContainer;

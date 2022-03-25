@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { SubmitHandler, useFormContext } from "react-hook-form";
+import { useCallback, useRef } from "react";
+import { SubmitHandler, useFormContext, UseFormReset } from "react-hook-form";
 
 import { TFormStage } from "../../../lib/hooks/useCreateTicketForm";
 import {
@@ -13,6 +14,10 @@ import TicketDetailsInputs from "./TicketDetailsInput";
 
 import NextSVG from "../../../assets/svg/chevron-right.svg";
 import PreviousSVG from "../../../assets/svg/chevron-left.svg";
+import {
+	CreateTicketSuccess,
+	CreateTicketWaiting,
+} from "./requestStateComponents";
 
 const Form = styled(FormStyled)`
 	display: flex;
@@ -56,9 +61,9 @@ const ButtonsWrapper = styled.div`
 	}
 
 	#create_form_previous_button {
-		margin-right: auto;
-		padding-right: 2em;
 		padding-left: 1em;
+		padding-right: 2em;
+		margin-right: auto;
 	}
 
 	#create_form_next_button {
@@ -68,63 +73,85 @@ const ButtonsWrapper = styled.div`
 	}
 `;
 
+const getFormStageComponent = (stage: TFormStage) => {
+	switch (stage.current) {
+		case FormStageEnum.EVENT_DETAIL:
+			return <EventDetailsInputs />;
+		case FormStageEnum.TICKET_DETAIL:
+			return <TicketDetailsInputs />;
+		case FormStageEnum.TICKET_POLICY:
+			return <div>placeholder</div>;
+		case FormStageEnum.WAITING:
+			return (
+				<CreateTicketWaiting
+					onSuccess={() => stage.set(FormStageEnum.SUCCESS)}
+				/>
+			);
+		case FormStageEnum.SUCCESS:
+			return <CreateTicketSuccess />;
+		case FormStageEnum.FAIL:
+			return <div>FAIL</div>;
+		default:
+			return null;
+	}
+};
+
+export type TCreateTicketFormSubmitHandler = (
+	data: TCreateTicketFormValues,
+	reset: UseFormReset<TCreateTicketFormValues>
+) => any;
+
 interface ICreateTicketFormProps {
 	stage: TFormStage;
-	onSubmit: SubmitHandler<TCreateTicketFormValues>;
+	onSubmit: TCreateTicketFormSubmitHandler;
 }
 
 function TicketForm({ stage, onSubmit }: ICreateTicketFormProps) {
-	const { trigger, handleSubmit } = useFormContext<TCreateTicketFormValues>();
+	const { trigger, handleSubmit, reset } =
+		useFormContext<TCreateTicketFormValues>();
 
-	const moveStage = (toStage: FormStageEnum) => stage.set(toStage);
+	const formRef = useRef<HTMLFormElement | null>(null);
 
-	const handleMovePreviousStage = () => moveStage(stage.current - 1);
-
-	const handleMoveNextStage = async () => {
-		const isBeforeLastStage = stage.current < FormStageEnum.TICKET_POLICY;
+	const handleMoveNextStage = useCallback(async () => {
 		const isValid = await trigger(undefined, { shouldFocus: true });
+		const isBeforeLastStage = stage.current < FormStageEnum.TICKET_POLICY;
 
-		if (isValid && isBeforeLastStage) moveStage(stage.current + 1);
-	};
+		if (isValid && isBeforeLastStage) stage.set((value) => value + 1);
+		else if (isValid && formRef.current) formRef.current.requestSubmit();
+	}, [stage, trigger]);
+
+	const submitHandlerWrapper: SubmitHandler<TCreateTicketFormValues> =
+		useCallback((data) => onSubmit(data, reset), [onSubmit, reset]);
 
 	return (
-		<Form onSubmit={handleSubmit(onSubmit)}>
-			<div id="form_wrapper">
-				{stage.current === FormStageEnum.EVENT_DETAIL ? (
-					<EventDetailsInputs />
-				) : stage.current === FormStageEnum.TICKET_DETAIL ? (
-					<TicketDetailsInputs />
-				) : (
-					<></>
-				)}
-			</div>
+		<Form onSubmit={handleSubmit(submitHandlerWrapper)} ref={formRef}>
+			<div id="form_wrapper">{getFormStageComponent(stage)}</div>
 
 			<ButtonsWrapper>
-				{stage.current !== FormStageEnum.EVENT_DETAIL ? (
+				{stage.current >= FormStageEnum.EVENT_DETAIL &&
+				stage.current <= FormStageEnum.TICKET_POLICY ? (
 					<button
-						id="create_form_previous_button"
 						type="button"
-						onClick={() => handleMovePreviousStage()}
+						id="create_form_previous_button"
+						onClick={() => stage.set((value) => value - 1)}
 					>
 						<PreviousSVG />
 						Previous
 					</button>
 				) : null}
 
-				<button
-					id="create_form_next_button"
-					type={
-						stage.current === FormStageEnum.TICKET_POLICY
-							? "submit"
-							: "button"
-					}
-					onClick={() => handleMoveNextStage()}
-				>
-					{stage.current !== FormStageEnum.TICKET_POLICY
-						? "Continue"
-						: "Create ticket"}
-					<NextSVG />
-				</button>
+				{stage.current >= FormStageEnum.WAITING || (
+					<button
+						type="button"
+						id="create_form_next_button"
+						onClick={handleMoveNextStage}
+					>
+						{stage.current !== FormStageEnum.TICKET_POLICY
+							? "Continue"
+							: "Create ticket"}
+						<NextSVG />
+					</button>
+				)}
 			</ButtonsWrapper>
 		</Form>
 	);

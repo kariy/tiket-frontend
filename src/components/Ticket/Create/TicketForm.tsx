@@ -15,6 +15,7 @@ import TicketDetailsInputs from "./TicketDetailsInput";
 import NextSVG from "../../../assets/svg/chevron-right.svg";
 import PreviousSVG from "../../../assets/svg/chevron-left.svg";
 import {
+	CreateTicketFailed,
 	CreateTicketSuccess,
 	CreateTicketWaiting,
 } from "./requestStateComponents";
@@ -90,7 +91,7 @@ const getFormStageComponent = (stage: TFormStage) => {
 		case FormStageEnum.SUCCESS:
 			return <CreateTicketSuccess />;
 		case FormStageEnum.FAIL:
-			return <div>FAIL</div>;
+			return <CreateTicketFailed />;
 		default:
 			return null;
 	}

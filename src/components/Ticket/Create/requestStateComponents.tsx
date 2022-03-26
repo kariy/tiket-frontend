@@ -74,3 +74,7 @@ export function CreateTicketSuccess() {
 		</SuccessContainer>
 	);
 }
+
+export function CreateTicketFailed() {
+	return <Container>Failed to create your ticket.</Container>;
+}

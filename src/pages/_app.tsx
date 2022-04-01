@@ -1,8 +1,10 @@
-import React from "react";
 import "../styles/globals.css";
-import styled, { useTheme } from "styled-components";
+import "react-toastify/dist/ReactToastify.css";
+
+import React from "react";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
+import styled, { useTheme } from "styled-components";
 
 import Providers from "providers";
 import Navbar from "@components/Navbar";

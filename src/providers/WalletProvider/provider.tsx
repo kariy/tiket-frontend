@@ -3,13 +3,14 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { WalletContext } from "./context";
 import { useWeb3WalletModal } from "@lib/hooks";
+import { toastWalletReject, toastWrongNetwork } from "@components/Toasts";
 
 export function WalletProvider({ children }: React.PropsWithChildren<{}>) {
 	/*/////////////////////////////////////////////////
     //    States
     /////////////////////////////////////////////////*/
 
-	const { modal, web3Provider, connectModal, disconnectModal, isConnected } =
+	const { modal, provider, connectModal, disconnectModal, isConnected } =
 		useWeb3WalletModal();
 
 	const [connectedAddress, setConnectedAddress] = useState<string | null>(
@@ -25,29 +26,21 @@ export function WalletProvider({ children }: React.PropsWithChildren<{}>) {
 	const connect = useCallback(async () => {
 		try {
 			const account = await connectModal();
-
 			if (account) setConnectedAddress(account);
 		} catch (e) {
-			// handle error here
-			//
-			// suggestion :
-			// can display a toast if user reject
-			return console.error({ e });
+			toastWalletReject();
+			return console.error({ e, test: "hi" });
 		}
 	}, [connectModal]);
 
 	const disconnect = useCallback(() => {
 		disconnectModal();
-
-		setConnectedAddress(null);
 	}, [disconnectModal]);
 
 	const handleAccountsChanged = useCallback(
 		(accounts: string[]) => {
 			if (!accounts.length) return disconnect();
-
 			window.location.reload();
-			// setConnectedAddress(accounts[0]);
 		},
 		[disconnect]
 	);
@@ -64,49 +57,60 @@ export function WalletProvider({ children }: React.PropsWithChildren<{}>) {
 	}, [modal, connect]);
 
 	useEffect(() => {
-		if (web3Provider) setSigner(web3Provider.getSigner());
-	}, [web3Provider]);
+		if (!provider) return;
+
+		/**
+		 * @Toast
+		 * Notify if wrong network/chain
+		 */
+
+		// toastWrongNetwork()
+
+		// provider.getNetwork().then(console.log);
+
+		setSigner(provider.getSigner());
+	}, [provider]);
 
 	/*/////////////////////////////////////////////////
     //    Event listeners
     /////////////////////////////////////////////////*/
 
 	useEffect(() => {
-		if (web3Provider) {
-			// @ts-ignore
-			web3Provider.provider.on("chainChanged", handleChainChanged);
+		if (!provider) return;
 
-			return () =>
-				// @ts-ignore
-				web3Provider.provider.removeListener(
-					"chainChanged",
-					handleChainChanged
-				);
-		}
-	}, [web3Provider, handleChainChanged]);
+		// @ts-ignore
+		provider.provider.on("chainChanged", handleChainChanged);
+
+		return () =>
+			// @ts-ignore
+			provider.provider.removeListener(
+				"chainChanged",
+				handleChainChanged
+			);
+	}, [provider, handleChainChanged]);
 
 	useEffect(() => {
-		if (web3Provider) {
-			// @ts-ignore
-			web3Provider?.provider.on("accountsChanged", handleAccountsChanged);
+		if (!provider) return;
 
-			return () => {
-				// @ts-ignore
-				web3Provider.provider.removeListener(
-					"accountsChanged",
-					handleAccountsChanged
-				);
-			};
-		}
-	}, [web3Provider, handleAccountsChanged]);
+		// @ts-ignore
+		provider.provider.on("accountsChanged", handleAccountsChanged);
+
+		return () => {
+			// @ts-ignore
+			provider.provider.removeListener(
+				"accountsChanged",
+				handleAccountsChanged
+			);
+		};
+	}, [provider, handleAccountsChanged]);
 
 	return (
 		<WalletContext.Provider
 			value={{
 				signer,
+				provider,
 				isConnected,
 				connectedAddress,
-				provider: web3Provider,
 				connect,
 				disconnect,
 			}}

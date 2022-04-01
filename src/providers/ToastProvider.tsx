@@ -6,7 +6,7 @@ export default function ToastProvider() {
 		<ToastContainer
 			theme="colored"
 			autoClose={3000}
-			position="bottom-left"
+			position="bottom-right"
 		/>
 	);
 }

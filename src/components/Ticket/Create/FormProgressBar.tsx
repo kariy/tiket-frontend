@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { FormStageEnum } from "../../../lib/types/form";
 
 import CheckmarkSVG from "../../../assets/svg/checkmark.svg";
@@ -30,11 +30,15 @@ const ProgressBarContainer = styled.div`
 `;
 
 const ProgressBar = styled.div<{ stage: FormStageEnum }>`
-	height: 100%;
-	transition: width 150ms ease-in-out;
-	width: calc((${({ stage }) => stage} / 3) * 100%);
-	border-radius: ${({ theme }) => theme.rounded.full};
-	background-color: ${({ theme }) => theme.colors.primary.light};
+	${({ theme, stage }) => css`
+		height: 100%;
+		width: ${stage < FormStageEnum.WAITING
+			? `calc((${stage} / 3) * 100%)`
+			: "100%"};
+		transition: width 150ms ease-in-out;
+		border-radius: ${theme.rounded.full};
+		background-color: ${theme.colors.primary.light};
+	`}
 `;
 
 interface IFormProgressBarProps {
@@ -60,6 +64,7 @@ function FormProgressBar({ stage }: IFormProgressBarProps) {
 					{!(stage > FormStageEnum.TICKET_POLICY) || <CheckmarkSVG />}
 				</div>
 			</div>
+
 			<ProgressBarContainer>
 				<ProgressBar stage={stage}></ProgressBar>
 			</ProgressBarContainer>

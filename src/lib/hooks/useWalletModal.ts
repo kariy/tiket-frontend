@@ -7,15 +7,18 @@ const providerOptions = {
 	walletconnect: {
 		package: WalletConnectProvider,
 		options: {
-			infuraId: process.env.INFURA_PROJECT_ID,
+			rpc: {
+				1: "http://localhost:8545",
+			},
+			// infuraId: process.env.INFURA_PROJECT_ID,
 		},
 	},
 };
 
-export function useWeb3WalletModal() {
+export function useWalletModal() {
 	const [isConnected, setIsConnected] = useState(false);
 
-	const [web3Provider, setWeb3Provider] =
+	const [provider, setProvider] =
 		useState<ethers.providers.Web3Provider | null>(null);
 
 	const [modal, setModal] = useState<Web3Modal | null>(null);
@@ -25,11 +28,12 @@ export function useWeb3WalletModal() {
 			if (!modal) return;
 
 			const wallet = await modal.connect();
+
 			const provider = new ethers.providers.Web3Provider(wallet);
 			const signer = provider.getSigner();
 
 			setIsConnected(true);
-			setWeb3Provider(provider);
+			setProvider(provider);
 
 			return await signer.getAddress();
 		},
@@ -58,8 +62,8 @@ export function useWeb3WalletModal() {
 
 	return {
 		modal,
+		provider,
 		isConnected,
-		web3Provider,
 		connectModal,
 		disconnectModal,
 	};

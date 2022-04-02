@@ -1,4 +1,4 @@
-import { useWeb3WalletModal } from "./useWalletModal";
+import { useWalletModal } from "./useWalletModal";
 import { useCreateTicketForm } from "./useCreateTicketForm";
 
 import { useUser } from "../../providers/UserProvider";
@@ -19,6 +19,6 @@ export {
 	useWallet,
 	useEthereum,
 	// Others
-	useWeb3WalletModal,
+	useWalletModal as useWeb3WalletModal,
 	useCreateTicketForm,
 };

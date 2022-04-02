@@ -21,4 +21,7 @@ export enum FormStageEnum {
 	EVENT_DETAIL,
 	TICKET_DETAIL,
 	TICKET_POLICY,
+	WAITING,
+	SUCCESS,
+	FAIL,
 }

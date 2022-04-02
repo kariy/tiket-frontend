@@ -2,7 +2,7 @@ import { Collection } from "./Collection";
 import { useUser } from "providers/UserProvider";
 import { useTicketCollection } from "./useTicketCollection";
 
-export function CollectionContainer({ children }: React.PropsWithChildren<{}>) {
+export function CollectionContainer() {
 	const user = useUser();
 
 	// get list of tickets owned by user

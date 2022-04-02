@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+
 import { BoxContainerStyled, LineBreakStyled } from "./Styled";
 
 export const Title = styled.h1`
@@ -15,6 +16,12 @@ const Container = styled(BoxContainerStyled)`
 	padding: 3em 2em;
 `;
 
+const Wrapper = styled.div`
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+`;
+
 type TPageComponents = {
 	Title: typeof Title;
 	Header: typeof Header;
@@ -28,7 +35,9 @@ type Props = {
 function MainPage({ children }: Props) {
 	return (
 		<Container>
-			{children({ Title, LineBreak: LineBreakStyled, Header })}
+			<Wrapper>
+				{children({ Title, LineBreak: LineBreakStyled, Header })}
+			</Wrapper>
 		</Container>
 	);
 }

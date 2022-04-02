@@ -1,10 +1,10 @@
+import axios from "axios";
 import Cookies from "js-cookie";
 import { JsonRpcSigner } from "@ethersproject/providers";
 
 import { prepareSignInSIWE } from "@lib/utils";
 import { SIWE_NONCE_KEY, USER_SESSION_KEY } from "@lib/constants/key";
-import axios from "axios";
-import { Session } from "@supabase/supabase-js";
+import { SiweMessage } from "siwe";
 
 /**
  *

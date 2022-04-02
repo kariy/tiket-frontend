@@ -39,7 +39,7 @@ export default async function handler(
 
 		if (userQueryError) throw userQueryError;
 
-		if (!users.length)
+		if (!users || !users.length)
 			return res
 				.status(401)
 				.send({ message: "USER_DOES_NOT_EXIST", code: 3200 });
